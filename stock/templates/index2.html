@@ -1,0 +1,141 @@
+
+<title>Live Data Stream</title>
+<table class="table table-hover table-bordered">
+    <tr>
+        <td>Offer Volume/حجم العرض</td>
+        <td>
+            <div id="offer_value"></div>
+        </td>
+        <td>Bid Price/سعر العرض</td>
+        <td>
+            <div id="BID"></div>
+        </td>
+        <td>Current / Last Trade Price - سعر التجارة الحالي / الأخير</td>
+        <td>
+            <div id="CUR"></div>
+        </td>
+        <td>Total Number of Trades / إجمالي عدد الصفقات</td>
+        <td>
+            <div id="VOL"></div>
+        </td>
+        <td>Total traded value / إجمالي القيمة المتداولة</td>
+        <td>
+            <div id="VAL"></div>
+        </td>
+    </tr>
+    <tr>
+      <td>Highest Price of current day / أعلى سعر لليوم الحالي</td>
+      <td>
+          <div id="HIGH"></div>
+      </td>
+      <td>Lowest Price of current day / أدنى سعر لليوم الحالي</td>
+        <td>
+            <div id="LOW"></div>
+        </td>
+        <td>Net Change in Units / صافي التغيير في الوحدات</td>
+        <td>
+            <div id="NCHN"></div>
+        </td>
+
+        <td>Percentage Change in Units / النسبة المئوية للتغيير في الوحدات</td>
+        <td>
+          <div id="PCHN"></div>
+        </td>
+        <td>
+          Trend / Direction / الاتجاه / الاتجاه
+        </td>
+        <td>
+          <div id="TRND"></div>
+        </td>
+    </tr>
+</table>
+<div id="container" style="height: 400px; min-width: 310px"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<script>
+    // Create the chart
+Highcharts.stockChart('container', {
+  chart: {
+    events: {
+      load: function () {
+
+        // set up the updating of the chart each second
+        var series = this.series[0];
+        setInterval(function () {
+          var x = (new Date()).getTime() // current time
+            $.ajax({url: "/realtime-data", success: function(result){
+               var y = (result['CUR'])
+              //  var x = result['UPDTIME']
+               $('#offer_value').html(result['OFRVOL'])
+               $('#BID').html(result['BID'])
+               $('#CUR').html(result['CUR'])
+               $('#VOL').html(result['VOL'])
+               $('#TRD').html(result['TRD'])
+               $('#VAL').html(result['VAL'])
+               $('#HIGH').html(result['HIGH'])
+               $('#LOW').html(result['LOW'])
+               $('#NCHN').html(result['NCHN'])
+               $('#PCHN').html(result['PCHN'])
+               $('#TRND').html(result['TRND'])
+                series.addPoint([x, y], true, true);
+            }});
+
+        }, 3000);
+      }
+    }
+  },
+
+  time: {
+    useUTC: false
+  },
+
+  rangeSelector: {
+    buttons: [{
+      count: 1,
+      type: 'minute',
+      text: '1M'
+    }, {
+      count: 5,
+      type: 'minute',
+      text: '5M'
+    }, {
+      type: 'all',
+      text: 'All'
+    }],
+    selected: 0
+  },
+
+  title: {
+    text: 'Live Stock data / بيانات الأسهم الحية'
+  },
+
+  exporting: {
+    enabled: true
+  },
+
+  series: [{
+    name: 'WDAM',
+    type:'area',
+    data: (function () {
+      // generate an array of random data
+      var data = []
+      var time = new Date().toLocaleString();
+      // now.format("dd/MM/yyyy hh:mm TT");
+
+      var i;
+      data.push([new Date().getTime(),0])
+      for (i = -10; i <= 0; i += 1) {
+        data.push([
+          time + i * 1000,
+          Math.round(Math.random() * 100)
+        ]);
+      }
+      return data;
+    }())
+  }]
+});
+
+</script>

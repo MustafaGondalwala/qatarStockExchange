@@ -1,0 +1,336 @@
+<html>
+    <head><title>Testing</title></head>
+    <body>
+        
+        <div id="container3" style="height: 400px; min-width: 310px"></div>
+        <div id="container2" style="height: 400px; min-width: 310px"></div>
+
+
+    </body>
+    
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+
+<div id="container" style="height: 400px; min-width: 310px"></div>
+<script>
+    // Create the chart
+    Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/new-intraday.json', function (data) {
+// create the chart
+Highcharts.stockChart('container', {
+
+
+  title: {
+    text: 'AAPL stock price by minute'
+  },
+
+  subtitle: {
+    text: 'Using ordinal X axis'
+  },
+
+  xAxis: {
+    gapGridLineWidth: 0
+  },
+
+  rangeSelector: {
+    buttons: [{
+      type: 'hour',
+      count: 1,
+      text: '1h'
+    }, {
+      type: 'day',
+      count: 1,
+      text: '1D'
+    }, {
+      type: 'all',
+      count: 1,
+      text: 'All'
+    }],
+    selected: 1,
+    inputEnabled: false
+  },
+
+  series: [{
+    name: 'AAPL',
+    type: 'area',
+    data: data,
+    gapSize: 5,
+    tooltip: {
+      valueDecimals: 2
+    },
+    fillColor: {
+      linearGradient: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1
+      },
+      stops: [
+        [0, Highcharts.getOptions().colors[0]],
+        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+      ]
+    },
+    threshold: null
+  }]
+});
+});
+
+// Create the chart
+Highcharts.stockChart('container2', {
+  chart: {
+    events: {
+      load: function () {
+
+        // set up the updating of the chart each second
+        var series = this.series[0];
+        setInterval(function () {
+          var x = (new Date()).getTime(), // current time
+            y = Math.round(Math.random() * 100);
+          series.addPoint([x, y], true, true);
+        }, 1000);
+      }
+    }
+  },
+
+  time: {
+    useUTC: false
+  },
+
+  rangeSelector: {
+    buttons: [{
+      count: 1,
+      type: 'minute',
+      text: '1M'
+    }, {
+      count: 5,
+      type: 'minute',
+      text: '5M'
+    }, {
+      type: 'all',
+      text: 'All'
+    }],
+    inputEnabled: false,
+    selected: 0
+  },
+
+  title: {
+    text: 'Live random data'
+  },
+
+  exporting: {
+    enabled: false
+  },
+
+  series: [{
+    name: 'Random data',
+    data: (function () {
+      // generate an array of random data
+      var data = [],
+        time = (new Date()).getTime(),
+        i;
+
+      for (i = -999; i <= 0; i += 1) {
+        data.push([
+          time + i * 1000,
+          Math.round(Math.random() * 100)
+        ]);
+      }
+      return data;
+    }())
+  }]
+});
+
+
+Highcharts.getJSON('https://www.highcharts.com/samples/data/aapl-ohlcv.json', function (data) {
+
+// split the data set into ohlc and volume
+var ohlc = [],
+  volume = [],
+  dataLength = data.length,
+  // set the allowed units for data grouping
+  groupingUnits = [[
+    'week',             // unit name
+    [1]               // allowed multiples
+  ], [
+    'month',
+    [1, 2, 3, 4, 6]
+  ]],
+
+  i = 0;
+
+for (i; i < dataLength; i += 1) {
+  ohlc.push([
+    data[i][0], // the date
+    data[i][1], // open
+    data[i][2], // high
+    data[i][3], // low
+    data[i][4] // close
+  ]);
+
+  volume.push([
+    data[i][0], // the date
+    data[i][5] // the volume
+  ]);
+}
+
+
+// create the chart
+Highcharts.stockChart('container3', {
+
+  rangeSelector: {
+    selected: 1
+  },
+
+  title: {
+    text: 'AAPL Historical'
+  },
+
+  yAxis: [{
+    labels: {
+      align: 'right',
+      x: -3
+    },
+    title: {
+      text: 'OHLC'
+    },
+    height: '60%',
+    lineWidth: 2,
+    resize: {
+      enabled: true
+    }
+  }, {
+    labels: {
+      align: 'right',
+      x: -3
+    },
+    title: {
+      text: 'Volume'
+    },
+    top: '65%',
+    height: '35%',
+    offset: 0,
+    lineWidth: 2
+  }],
+
+  tooltip: {
+    split: true
+  },
+
+  series: [{
+    type: 'candlestick',
+    name: 'AAPL',
+    data: ohlc,
+    dataGrouping: {
+      units: groupingUnits
+    }
+  }, {
+    type: 'column',
+    name: 'Volume',
+    data: volume,
+    yAxis: 1,
+    dataGrouping: {
+      units: groupingUnits
+    }
+  }]
+});
+});
+
+
+</script>
+<script>
+
+Highcharts.getJSON('http://localhost:5080/getdata', function (data) {
+
+    // split the data set into ohlc and volume
+    var ohlc = [],
+        volume = [],
+        dataLength = data.length,
+        // set the allowed units for data grouping
+        groupingUnits = [[
+            'week',                         // unit name
+            [1]                             // allowed multiples
+        ], [
+            'month',
+            [1, 2, 3, 4, 6]
+        ]],
+
+        i = 0;
+
+    for (i; i < dataLength; i += 1) {
+        ohlc.push([
+            data[i][0], // the date
+            data[i][1], // open
+            data[i][2], // high
+            data[i][3], // low
+            data[i][4] // close
+        ]);
+
+        volume.push([
+            data[i][0], // the date
+            data[i][5] // the volume
+        ]);
+    }
+
+
+    // create the chart
+    Highcharts.stockChart('container1', {
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: 'AAPL Historical'
+        },
+
+        yAxis: [{
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text: 'OHLC'
+            },
+            height: '60%',
+            lineWidth: 2,
+            resize: {
+                enabled: true
+            }
+        }, {
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text: 'Volume'
+            },
+            top: '65%',
+            height: '35%',
+            offset: 0,
+            lineWidth: 2
+        }],
+
+        tooltip: {
+            split: true
+        },
+
+        series: [{
+            type: 'candlestick',
+            name: 'AAPL',
+            data: ohlc,
+            dataGrouping: {
+                units: groupingUnits
+            }
+        }, {
+            type: 'column',
+            name: 'Volume',
+            data: volume,
+            yAxis: 1,
+            dataGrouping: {
+                units: groupingUnits
+            }
+        }]
+    });
+});</script>
+    </html>
