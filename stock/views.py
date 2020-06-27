@@ -35,7 +35,7 @@ class QatarExchange:
             'BID':float(main['ns0:BID']),
             'BIDVOL':float(main['ns0:BIDVOL']),
             'CUR':float(main['ns0:CUR']),
-            'TRD':float(main['ns0:TRD']),
+            'TRND':main['ns0:TRND'],
             'VOL':float(main['ns0:VOL']),
             'VAL':float(main['ns0:VAL']),
             'HIGH':float(main['ns0:HIGH']),
@@ -44,7 +44,7 @@ class QatarExchange:
             'W52H':float(main['ns0:W52H']),
             'W52L':float(main['ns0:W52L']),
             'MCAP':float(main['ns0:MCAP']),
-            'STATTIME':main['ns0:STATTIME']
+            'STATTIME':main['ns0:STATTIME'],
         }
         return data
     def getCurrentData(self):
@@ -54,8 +54,10 @@ class QatarExchange:
         data = self.client.service.OpInstruments(self.__username,self.__password,self.__marketType,self.__instrument)
         return self.toJson(data)
 
+
+
+main = QatarExchange()
 def getData(request):
-    main = QatarExchange()
     response = main.getCurrentData()
     return JsonResponse(response,safe=False)
 
