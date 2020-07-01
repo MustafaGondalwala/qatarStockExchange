@@ -4,7 +4,10 @@ from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from zeep import Client
 import xmltodict, json
-
+from .models import Stock
+from django.utils.timezone import make_aware
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 class QatarExchange:
     __username = 'widam'
@@ -46,20 +49,28 @@ class QatarExchange:
             'MCAP':float(main['ns0:MCAP']),
             'STATTIME':main['ns0:STATTIME'],
         }
+        Stock.objects.create(BID=data['BID'],BIDVOL=data['BIDVOL'],CUR=data['CUR'],HIGH=data['HIGH'],LOW=data['LOW'],MCAP=data['MCAP'],TRND=data['TRND'])
         return data
     def getCurrentData(self):
         if(self.client == ''):
-            self.connectToServer
+            self.connectToServer()
         # response =  self.client.service.OpInstruments(self.__username,self.__password,self.__instrument,self.__marketType)
         data = self.client.service.OpInstruments(self.__username,self.__password,self.__marketType,self.__instrument)
         return self.toJson(data)
-
 
 
 main = QatarExchange()
 def getData(request):
     response = main.getCurrentData()
     return JsonResponse(response,safe=False)
+
+def one_hour(request):
+
+    this_hour = datetime.now(tz=timezone.utc).replace(minute=0, second=0, microsecond=0)
+    one_hour_later = this_hour + timedelta(hours=1)
+    results = Stock.objects.filter(created_on__lt=(this_hour, one_hour_later))
+    print(results)
+    return JsonResponse("ok",safe=False)
 
 def index(request):
     return render(request, 'index2.html')
