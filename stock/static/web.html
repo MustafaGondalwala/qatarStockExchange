@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<style>
+	.navbar-inverse {
+    background-color: rgb(215, 216, 216)!important;
+    border-color: #080808;
+}
+
+.navbar {
+    position: relative;
+    min-height: 0px;
+    margin-bottom: 0px;
+    border: none;
+    border-radius: 2px;
+}
+.nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 27px;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #181A1C;
+    font: normal normal normal 15px/1.4em janna-lt-w20-regular,sans-serif;
+}
+.navbar-inverse .navbar-nav>li>a:hover {
+    color: white;
+    background-color: rgba(99, 103, 105, 1);
+}
+.d-flex ul {
+    padding-left: 10px;
+}
+.d-flex ul li {
+    padding: 5px 0;
+}
+
+.logo  {
+    width: 100px;
+    padding: 0;
+    text-align: center;
+    display: inline-block;
+    border-right: 1px dashed gray;
+    vertical-align: middle;
+    line-height: 25px;
+}
+
+.nav{
+    padding-right: 0px; 
+    padding-left: 0px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.main-header{margin: 20px 0;}
+.header{    
+    background-color: rgba(3, 66, 142, 1);
+    min-height: 178px;
+}
+.header .image {
+	text-align: right;
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+ }
+.header .text {
+    color: #fff;
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+}
+.header .text .inner {
+    width: 55%;
+    text-align: right;
+    margin-top: 15px;
+}
+.header .text .inner p{
+    font-size: 12px;
+    margin: 0;
+    line-height: 20px;
+    color: #D4D6D7;
+}
+img{
+	max-width: 250px;
+}
+.box1 {
+	max-width: 34px;
+}
+ h6 {
+    font-size: 14px;
+}
+.footer.container {
+    background-color: #d7d8d8;
+}
+
+.d-flex {
+    display: block;
+    background-color: #d7d8d8;
+    padding: 10px 0;
+    border-bottom: 6px solid rgba(3, 66, 142, 1);
+}
+
+.footer ul {
+    list-style-type: none;
+}
+body {
+ 	background-image: url("bgimage.webp");
+    position: absolute;
+    width: 100%;
+    object-position: 50% 0%;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
+.flex2{	
+    width: 14%;
+}
+.flex1 {
+    width: 9%;
+
+}
+.copyright {
+    text-align: right;
+    display: inline-block;
+    width: 42%;
+}
+.copyright p{
+    font-size: 10px;
+    color: #636769;
+    margin-right: 10px;
+    vertical-align: bottom;
+    margin-bottom: 10px;
+}
+.menu{
+    border-right: 1px dashed gray;
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+    line-height: 10px;
+}
+ul{
+	padding: 0;
+	list-style-type: none;
+ }
+ .social ul li{ display: inline-block;padding: 1px;line-height: 25px; }
+p{
+	margin-top:5px;
+}
+.footer ul li a{
+	 color: black;
+	 font-size: 6px;
+}
+@media (min-width: 1200px){
+	.container {
+	    width: 980px;
+	}
+}
+.sidenav-menu li  {
+    border-bottom: 1px solid rgba(130, 184, 238, 1);
+    list-style-type: none;
+    height: 30px;
+    min-height: 29px;
+    width: 168px;
+    padding-top: 4px;
+    padding-left: 19px;
+}
+.sidenav-menu a{
+	color:#636769;
+}
+.sidenav-menu {
+    background-color: white;
+    padding-top: 27px;
+}
+</style>
+</head>
+<body>		
+	<header class="main-header">
+		<div class ="container">	
+			<div class="header">
+				<div class="top">
+					<div class="social">
+						<ul>
+							<li><a href="#" target="_blank"><img class="fb icon" src="facebook.png" /></a></li>
+							<li><a href="#" target="_blank"><img class="fb icon" src="twitter.png" /></a></li>
+							<li><a href="#" target="_blank"><img class="fb icon" src="youtube.png" /></a></li>
+							<li><a href="#" target="_blank"><img class="fb icon" src="insta.png" /></a></li>
+							<li><a href="#" target="_blank"><img class="fb icon" src="linked-in.png" /></a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="bottom">
+					<div class="text">
+						<div class="inner">
+							<p>الشركة القطرية الرائدة للأغذية </p>
+							<p>Qatar's Premium Food Company</p>
+						</div>
+					</div>
+					<div class="image">
+						<img src="image1.gif"alt="image1">
+					</div>
+				</div>
+			</div>
+			<div class="navigation">
+				<nav class="navbar navbar-inverse">		    
+				    <ul class="nav navbar-nav">
+				      <li ><a href="#">HOME</a></li>
+				      <li><a href="#">ABOUT US</a></li>
+				      <li><a href="#">INVESTORS</a></li>
+				      <li ><a href="#">PRODUCTS</a></li>
+				      <li><a href="#">MEDIA CENTER</a></li>
+				      <li><a href="#">CAREER</a></li>
+				      <li><a href="#">CONTACT US</a></li>
+				    </ul>
+				</nav>
+			</div>
+		</div>	
+	</header>	
+
+	<sidenav class="sidenav">
+		<div class="container">
+			<div class="sidenav-menu">
+				<ul>
+				    <li ><a href="#">About Us</a></li>
+					<li><a href="#">Board of Directors</a></li>
+					<li><a href="#">Certificates and Awards</a></li>
+					<li ><a href="#">About Qatar</a></li>
+				</ul>
+			</div>
+		</div>
+	</sidenav>
+	<footer class="footer">
+		<div class="container">
+			<div class="d-flex">
+				<div class="logo flex1">
+					<a href="/" target="_blank"><img src="1.webp" /></a>
+					<P>Webmail</P>
+				</div>
+				<div class="menu flex2">
+					<div class="foo-menu">
+						<ul> 
+							<li><a href="/">About us</a></li>
+							<li><a href="/">Board of Directors</a></li>
+							<li><a href="/">Certificates and Awards</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="menu flex2">
+					<div class="foo-menu">
+						<ul> 
+							<li><a href="/">Financial Reporting</a></li>
+							<li><a href="/">Corporate Governance </a></li>
+							<li><a href="/">Widam Exchange</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="menu flex1">
+					<div class="foo-menu">
+						<ul> 
+							<li><a href="/">Products</a></li>
+							<li><a href="/">Home Delivery</a></li>
+							<li><a href="/">Branches</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="menu flex1">
+					<div class="foo-menu">
+						<ul> 
+							<li><a href="/"></a></li>
+							<li><a href="/">Suggestion</a></li>
+							<li><a href="/">Contact Us</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="copyright">
+					<p>Copyright 2015 © For Widam Food Company</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+</body>
+</html>
+

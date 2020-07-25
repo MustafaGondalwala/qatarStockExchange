@@ -7,7 +7,10 @@ import xmltodict, json
 from .models import Stock
 from django.utils.timezone import make_aware
 from django.utils import timezone
+from django.core import serializers
 from datetime import datetime, timedelta
+from django.db import connection
+
 
 class QatarExchange:
     __username = 'widam'
@@ -49,7 +52,10 @@ class QatarExchange:
             'MCAP':float(main['ns0:MCAP']),
             'STATTIME':main['ns0:STATTIME'],
         }
-        Stock.objects.create(BID=data['BID'],BIDVOL=data['BIDVOL'],CUR=data['CUR'],HIGH=data['HIGH'],LOW=data['LOW'],MCAP=data['MCAP'],TRND=data['TRND'])
+        from datetime import datetime, timedelta, timezone
+        import time
+        last_modified_string = round(int(round(time.time() * 1000)))
+        Stock.objects.create(BID=data['BID'],BIDVOL=data['BIDVOL'],CUR=data['CUR'],HIGH=data['HIGH'],LOW=data['LOW'],MCAP=data['MCAP'],TRND=data['TRND'],last_modified_string=last_modified_string)
         return data
     def getCurrentData(self):
         if(self.client == ''):
@@ -58,22 +64,72 @@ class QatarExchange:
         data = self.client.service.OpInstruments(self.__username,self.__password,self.__marketType,self.__instrument)
         return self.toJson(data)
 
-
-main = QatarExchange()
+# main = QatarExchange()
 def getData(request):
+    main = QatarExchange()
     response = main.getCurrentData()
     return JsonResponse(response,safe=False)
 
-def one_hour(request):
+def report(request):
+    type = request.GET['type']
+    hour_type = 0
+    if(type == "1"):
+        hour_type = 24
+    elif(type == "2"):
+        hour_type = 48
+    elif(type == "3"):
+        hour_type = 60
+    elif(type == "15"):
+        hour_type = 360
+    elif(type == "30"):
+        hour_type = 720
+    elif(type == "60"):
+        hour_type = 1440
+    elif(type == "90"):
+        hour_type = 2160
+    elif(type == "182"):
+        hour_type = 4368
+    elif(type == "365"):
+        hour_type = 8760
 
-    this_hour = datetime.now(tz=timezone.utc).replace(minute=0, second=0, microsecond=0)
-    one_hour_later = this_hour + timedelta(hours=1)
-    results = Stock.objects.filter(created_on__lt=(this_hour, one_hour_later))
-    print(results)
-    return JsonResponse("ok",safe=False)
+    from datetime import datetime, timedelta, timezone
+    first_date = datetime.now().strftime('%Y-%m-%d')
 
+    # print)
+
+    last_hour_date_time = datetime.now() - timedelta(hours = hour_type)
+    last_hour_date_time = last_hour_date_time.strftime('%Y-%m-%d')
+    print(first_date,last_hour_date_time)
+    data = Stock.objects.filter(created_on__range=(last_hour_date_time,first_date)).values().order_by('-created_on')
+    return JsonResponse(list(data),safe=False)
 def index(request):
     return render(request, 'index2.html')
 
 
 
+
+def currentprice(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT AVG(last_modified_string) as last_modified_string,AVG(CUR) as CUR from stock_stock GROUP BY created_on")
+        row = cursor.fetchall()
+    return JsonResponse(row,safe=False)
+
+def volume(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT ROUND(AVG(last_modified_string)) as last_modified_string,AVG(MCAP) as MCAP from stock_stock GROUP BY created_on")
+        row = cursor.fetchall()
+    return JsonResponse(row,safe=False)
+def mainpage(request):
+    return render(request, 'web.html')
+
+
+main = QatarExchange()
+def top10(request):
+    top10Data = Stock.objects.all()[:10].values()
+    response = main.getCurrentData()
+    return JsonResponse({"top10Data":list(top10Data),'mcap':response['MCAP'],'volume':response['VOL']},safe=False)
+def all(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT AVG(BID) as BID,AVG(HIGH) as HIGH,AVG(LOW) as LOW,AVG(MCAP) as MCAP, FLOOR(AVG(last_modified_string)) as last_modified_string from stock_stock GROUP BY created_on ORDER BY last_modified_string ASC")
+        row = cursor.fetchall()
+    return JsonResponse(row,safe=False)
