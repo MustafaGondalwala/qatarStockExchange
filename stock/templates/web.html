@@ -272,21 +272,18 @@ p{
 
 <div class="container" style="background-color:white;">
   <div class="row">
-  <div class="col-xs-12">
+  <div class="col-lg-4">
     <div class="tabbable tabs-left">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#home" data-toggle="tab">Share Graph</a></li>
-        <li><a href="#about" data-toggle="tab">Share Data</a></li>
-        <li><a href="#services" data-toggle="tab">Trades</a></li>
+        <li class="active"><a href="#show_graph" data-toggle="tab">Share Graph</a></li>
+        <li><a href="#share_data" data-toggle="tab">Share Data</a></li>
+        <li><a href="#trades" data-toggle="tab">Trades</a></li>
       </ul>
-      <div class="tab-content">
-        <div class="tab-pane active" id="home">                
-          <div class="container">
+      <div class="tab-content tabs-left">
+        <div class="tab-pane active" id="show_graph">                
             <div id="stock_price_chart_container" class="container" style="height: 400px; min-width: 310px"></div>
-            <br /><br />
-          </div>
         </div> 
-        <div class="tab-pane" id="about"> 
+        <div class="tab-pane" id="share_data"> 
           <div class="">
               <table class="table">
                   <tr>
@@ -311,19 +308,19 @@ p{
                   </tr>
                   <tr>
                     <th>Market Capitalization</th>
-                    <th>QAR</th>
+                    <th id="mcap">Loading ...</th>
                   </tr>
                   <tr>
                     <th>Numbers of Share</th>
-                    <th>QAR</th>
+                    <th id="numbers_of_share">Loading ...</th>
                   </tr>
               </table>
           </div>
         </div>
       
-        <div class="tab-pane" id="services"> 
+        <div class="tab-pane" id="trades"> 
           <div class="container">
-            <table class="table">
+            <table class="table" id="main_table">
               <tr>
                 <th>Time</th>
                 <th>Last</th>
@@ -416,7 +413,17 @@ p{
 <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
 <script>
  $.ajax({url:"/top10"}).then(data => {
-   console.log(data)
+   const {mcap,volume,top10Data} = data
+  $("#mcap").html(mcap)
+  $("#numbers_of_share").html(volume)
+  console.log(top10Data)
+  top10Data.map(item => {
+    console.log(item.last_modified,item.CUR,item.BIDVOL)
+    $("#main_table").append("<tr><td>"+item.last_modified+"</td><td>"+item.CUR+"</td><td>"+item.BIDVOL+"</td></tr>")
+  })
+
+
+
  })
  
   Highcharts.getJSON('/currentprice', function (data) {
@@ -451,6 +458,26 @@ p{
     });
     });
 
+
 </script>
+
+<script>
+  function openCity(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+  </script>
 </html>
 
